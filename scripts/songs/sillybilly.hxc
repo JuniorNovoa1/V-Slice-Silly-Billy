@@ -5,6 +5,7 @@ import funkin.play.PlayState;
 import funkin.play.cutscene.VideoCutscene;
 import funkin.play.cutscene.CutsceneType;
 import funkin.play.PlayStatePlaylist;
+import funkin.play.song.Song;
 
 class sillybilly extends Song {
 	public function new() {
