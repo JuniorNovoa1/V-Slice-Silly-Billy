@@ -1,0 +1,21 @@
+import funkin.play.song.Song;
+import funkin.play.PlayState;
+import funkin.Paths;
+import funkin.play.cutscene.VideoCutscene;
+
+import funkin.play.PlayStatePlaylist;
+
+class sillybilly extends Song {
+  var hasPlayedCutscene:Bool;
+
+	public function new() {
+		super('Silly Billy');
+
+    hasPlayedCutscene = false;
+	}
+
+  function onSongStart(event:ScriptEvent):Void
+  {
+    super.onSongStart(event);
+  }
+}

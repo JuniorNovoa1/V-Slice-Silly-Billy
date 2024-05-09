@@ -1,0 +1,88 @@
+{
+  "props": [
+    {
+      "danceEvery": 0,
+      "zIndex": 10,
+      "position": [0, 0],
+      "scale": [1, 1],
+      "animType": "sparrow",
+      "name": "mirror",
+      "isPixel": false,
+      "assetPath": "bg/silly_mirror",
+      "scroll": [0.9, 0.9],
+      "animations": []
+    },
+    {
+      "danceEvery": 0,
+      "zIndex": 20,
+      "position": [0, 0],
+      "scale": [1.1, 1.1],
+      "name": "Silly_floor",
+      "isPixel": false,
+      "assetPath": "bg/bgAssets",
+      "scroll": [0.9, 0.9],
+      "animations": [
+        {"name": "Silly_floor", "prefix": "Silly_floor"}
+      ],
+      "startingAnimation": "Silly_floor"
+    },
+    {
+      "danceEvery": 0,
+      "zIndex": 30,
+      "position": [0, 0],
+      "scale": [1.1, 1.1],
+      "name": "Silly_idk_1",
+      "isPixel": false,
+      "assetPath": "bg/bgAssets",
+      "scroll": [0.9, 0.9],
+      "animations": [
+        {"name": "Silly_idk_1", "prefix": "Silly_idk_1"}
+      ],
+      "startingAnimation": "Silly_idk_1"
+    },
+    {
+      "danceEvery": 0,
+      "zIndex": 310,
+      "position": [0, 0],
+      "scale": [1.1, 1.1],
+      "name": "Silly_idk_2",
+      "isPixel": false,
+      "assetPath": "bg/bgAssets",
+      "scroll": [0.9, 0.9],
+      "animations": [
+        {"name": "Silly_idk_2", "prefix": "Silly_idk_2"}
+      ],
+      "startingAnimation": "Silly_idk_2"
+    },
+    {
+      "danceEvery": 0,
+      "zIndex": 320,
+      "position": [0, 0],
+      "scale": [1366, 768],
+      "name": "blackScreen",
+      "isPixel": false,
+      "assetPath": "0xFF000000",
+      "scroll": [0, 0]
+    }
+  ],
+  "cameraZoom": 0.725,
+  "version": "1.0.0",
+  "characters": {
+    "bf": {
+      "zIndex": 300,
+      "position": [1630, 900],
+      "cameraOffsets": [0, 0]
+    },
+    "dad": {
+      "zIndex": 200,
+      "position": [840, 840],
+      "cameraOffsets": [0, 0]
+    },
+    "gf": {
+      "zIndex": 100,
+      "cameraOffsets": [0, 0],
+      "position": [430, 1300]
+    }
+  },
+  "name": "billy"
+}
