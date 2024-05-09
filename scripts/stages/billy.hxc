@@ -21,7 +21,6 @@ class Billy extends Stage
 	function onSongStart(event:ScriptEvent):Void
 	{
 		super.onSongStart(event);
-		VideoCutscene.play(Paths.videos('open'), CutsceneType.MIDSONG);
 	}
 
 	override function buildStage()

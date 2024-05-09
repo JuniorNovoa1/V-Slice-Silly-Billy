@@ -1,0 +1,23 @@
+import flixel.FlxG;
+import flixel.math.FlxAngle;
+import funkin.Paths;
+import funkin.play.PlayState;
+import funkin.play.cutscene.VideoCutscene;
+import funkin.play.cutscene.CutsceneType;
+import funkin.play.PlayStatePlaylist;
+
+class sillybilly extends Song {
+	public function new() {
+		super('silly billy');
+	}
+
+	function onSongStart(event:ScriptEvent):Void
+	{
+		super.onSongStart(event);
+		VideoCutscene.play(Paths.videos('open'), CutsceneType.MIDSONG);
+		/*VideoCutscene.onVideoEnded.add(function(){
+			PlayState.instance.isInCutscene = false;
+		});*/
+		PlayState.instance.isInCutscene = false;
+	}
+}
