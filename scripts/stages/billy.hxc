@@ -18,6 +18,10 @@ import Type;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import openfl.filters.ShaderFilter;
+import funkin.play.character.BaseCharacter;
+import funkin.play.character.CharacterDataParser;
+import funkin.play.character.CharacterType;
+import funkin.play.CharacterData.CutsceneType;
 
 class Billy extends Stage //This is indeed a stage script, I couldn't get the song script to work because I'm stupid.
 {
@@ -30,6 +34,8 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 	var blueShader:FlxShader;
 	var currentStage;
 	var bgSprite:FunkinSprite;
+
+	var startingFocusPointsBF = [];
 	function onCreate(event:ScriptEvent):Void
 	{
 		super.onCreate(event);
@@ -48,9 +54,15 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 		//camera.follow(PlayState.instance.cameraFollowPoint, null, 1);
 	}
 
+	function realvideopath(path):String
+	{
+		return "mods/hitsingle/videos/videos/" + path + ".mp4"; //for some reason `Path.videos(path)` doesn't work with mods, so this is a simple workaround.
+	}
+
 	function onCreatePost():Void
 	{
 		//PlayState.instance.camGame.bgColor.alpha = 0; // Show behind camera.
+		startingFocusPointsBF = [getBoyfriend().cameraFocusPoint.x - 100,getBoyfriend().cameraFocusPoint.y,getDad().cameraFocusPoint.x,getDad().cameraFocusPoint.y];
 		PlayState.instance.healthBar.visible = false;
 		PlayState.instance.healthBarBG.visible = false;
 		PlayState.instance.iconP1.visible = false;
@@ -105,7 +117,7 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 	function onSongStart(event:ScriptEvent):Void
 	{
 		super.onSongStart(event);
-		VideoCutscene.play(Paths.videos('open'), CutsceneType.MIDSONG);
+		VideoCutscene.play(realvideopath('open'), CutsceneType.MIDSONG);
 		VideoCutscene.onVideoEnded.add(function(){
 			PlayState.instance.mayPauseGame = true;
 			PlayState.instance.playerStrumline.visible = true;
@@ -222,22 +234,55 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 			tweenCameraZoom(0.5, 3, true, FlxEase.linear);
 	}
 
+	function fetchAssetPaths():Array<String>
+	{
+		var results:Array<String> = super.fetchAssetPaths();
+		results.push(Paths.image('characters/Lookalike_Assets'));
+		results.push(Paths.image('characters/Lookalike_Alt'));
+		results.push(Paths.image('characters/unshrink'));
+		results.push(Paths.image('bg/broken_mirror'));
+		return results;
+	}
+
 	var objects = [];
 	var prevIndex = 0;
+
+	function changeDad(newChar:String) {
+		getDad(true); //kills bro
+		var dad:BaseCharacter = CharacterDataParser.fetchCharacter(newChar);
+		dad.characterType = CharacterType.DAD;
+		currentStage.addCharacter(dad, CharacterType.DAD);
+		currentStage.refresh();
+		dad.resetCharacter();
+	}
 
 	function onBeatHit(event:SongTimeScriptEvent):Void
 	{
 		super.onBeatHit(event);
+		if (!getDad().isSinging()) //dad kept floated??
+			getDad().resetPosition();
+		if (!getBoyfriend().isSinging()) //bf kept sliding across the floor??
+			getBoyfriend().resetPosition();
+
 		switch(event.beat) 
 		{
 			case 335: //transform
-				//
+				changeDad("transLookalike");
+				getDad().playAnimation("Smallize");
 			case 339: //short char
-				//
+				iconOpp.animation.play('3');
+				changeDad("bf-lookalike");
+				getDad().x += 42;
+				getDad().y -= 21;
 			case 488: //transform back
-				//
+				iconOpp.animation.play('1');
+				changeDad("transLookalike2");
+				getDad().x += 228;
+				getDad().y += 171;
+				getDad().playAnimation("Bigize");
+				tweenCameraZoom(0.625, 3, true, FlxEase.linear);
 			case 492: //tall char again
-				//
+				changeDad("evilLookalike");
 			case 802: //I'LL MAKEEEE
 				objects = [bar,iconOpp,iconP,actualBar,evilBar,PlayState.instance.scoreText];
 				for (i in 0...objects.length)
@@ -247,15 +292,24 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 				FlxTween.tween(PlayState.instance.playerStrumline, {alpha: 0}, 1);
 				FlxTween.tween(PlayState.instance.camHUD, {alpha: 0}, 1);
 				tweenCameraZoom(0.625, 3, true, FlxEase.linear);
-				tweenCameraZoom(0.625, 3, true, FlxEase.linear);
-				currentStage.getDad().visible = false;
-				lyric.setPosition(currentStage.getDad().x + 720, currentStage.getDad().y + 470);
+				PlayState.instance.tweenCameraToPosition(startingFocusPointsBF[2], startingFocusPointsBF[3], 1, true, FlxEase.sineInOut); //supposed to tween cam pos
+				getDad().visible = false;
+				lyric.setPosition(getDad().x + 706, getDad().y + 473);
 				lyric.visible = true;
 				lyric.anim.play('story_of_yourtalebilly', false, false);
 			case 812: //you sayy
 				
-			case 820: //how proud you are
+			//case 820: //how proud you are
+			case 820: //proud
+				currentStage.getNamedProp("mirror").loadGraphic(Paths.image('bg/broken_mirror'));
+                FlxTween.num(255, 0, 1.75, {ease: FlxEase.quadOut, onUpdate: function(twn){ currentStage.getNamedProp("mirror").setColorTransform(1,1,1,1,twn.value,twn.value,twn.value,0); } } );
+                PlayState.instance.camGame.shake(0.01, 0.25);
+                FlxG.sound.play(Paths.sound("mirror_break"));
 			case 826: //of me
+			case 830:
+				bgSprite.visible = true;
+				bgSprite.alpha = 0;
+				FlxTween.tween(bgSprite, {alpha: 1}, 1);
 			case 833: //CUTSCENE
 				var playerStrumline:FlxSprite = PlayState.instance.playerStrumline;
 				if (playerStrumline != null)
@@ -264,16 +318,15 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 					playerStrumline.alpha = 0;
 				}
 				PlayState.instance.opponentStrumline.visible = false;
-				bgSprite.visible = true;
 				bars.zIndex = 1000;
-				VideoCutscene.play(Paths.videos('SO_STAY_FINAL'), CutsceneType.MIDSONG);
+				VideoCutscene.play(realvideopath('SO_STAY_FINAL'), CutsceneType.MIDSONG);
 				VideoCutscene.onVideoEnded.add(function(){
 					//shaders
 					/*PlayState.instance.camGame.setFilters([new ShaderFilter(blue)]);
                     PlayState.instance.camHUD.setFilters([new ShaderFilter(blue)]);
 					PlayState.instance.camCutscene.setFilters([new ShaderFilter(blue)]);*/
 					PlayState.instance.mayPauseGame = true;
-					bgSprite.visible = false;
+					bgSprite.alpha = 0;
 
 					for (i in 0...objects.length)
 					{
@@ -297,7 +350,7 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 			case 864:
 				FlxTween.tween(PlayState.instance.playerStrumline, {alpha: 1}, 1);
 			case 996:
-				bgSprite.visible = true;
+				bgSprite.alpha = 1;
 			case 998: //fade strums out
 				var playerStrumline:FlxSprite = PlayState.instance.playerStrumline;
 				if (playerStrumline != null)
@@ -324,8 +377,22 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 
 	function onNoteHit(event:HitNoteScriptEvent):Void
 	{
-		if (!event.note.noteData.getMustHitNote()) PlayState.instance.vocals.opponentVolume = 1;
+		if (!event.note.noteData.getMustHitNote()) PlayState.instance.vocals.volume = 1; PlayState.instance.vocals.playerVolume = 1; PlayState.instance.vocals.opponentVolume = 1;
+		if (event.note.noteData.getMustHitNote()) {
+			getBoyfriend().resetPosition();
+			getBoyfriend().cameraFocusPoint.x = startingFocusPointsBF[0];
+			getBoyfriend().cameraFocusPoint.y = startingFocusPointsBF[1];
+			getBoyfriend().playSingAnimation(event.note.noteData.noteDirection);
+		}
+		if (!event.note.noteData.getMustHitNote()) {
+			getDad().resetPosition();
+			getDad().cameraFocusPoint.x = startingFocusPointsBF[2];
+			getDad().cameraFocusPoint.y = startingFocusPointsBF[3];
+			getDad().playSingAnimation(event.note.noteData.noteDirection);
+		}
 		if ((mustHitSection && event.note.noteData.getMustHitNote()) || (!mustHitSection && !event.note.noteData.getMustHitNote())) {
+			var xoffsetbffix = 0;
+			if (mustHitSection && event.note.noteData.getMustHitNote()) xoffsetbffix = -200;
 			FlxG.camera.targetOffset.set(0,0);
 			if (event.note.direction == 0) FlxG.camera.targetOffset.x = -30;
 			if (event.note.direction == 1) FlxG.camera.targetOffset.y = 30;

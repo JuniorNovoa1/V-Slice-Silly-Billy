@@ -1,6 +1,8 @@
 {
 	"version": "1.0.0",
-	"renderType": "multisparrow",
+	"name": "evilLookalike-anim2",
+	"assetPath": "characters/unshrink",
+	"renderType": "sparrow",
 	"animations": [
 		{
 			"loop": false,
@@ -12,14 +14,13 @@
 				150,
 				160
 			],
-			"anim": "Bigize",
+			"name": "Bigize",
 			"fps": 24,
-			"name": "ElUnshrink",
+			"prefix": "ElUnshrink",
 			"indices": []
 		}
 	],
 	"no_antialiasing": false,
-	"assetPath": "characters/unshrink",
 	"position": [
 		105,
 		-165

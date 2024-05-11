@@ -1,6 +1,8 @@
 {
 	"version": "1.0.0",
-	"renderType": "multisparrow",
+	"name": "evilLookalike2",
+	"assetPath": "characters/Lookalike_Assets",
+	"singTime": 8.0,
 	"animations": [
 		{
 			"loop": false,
@@ -12,9 +14,9 @@
 				0,
 				0
 			],
-			"anim": "idle",
+			"name": "idle",
 			"fps": 24,
-			"name": "ElIdleSMALL",
+			"prefix": "ElIdleSMALL",
 			"indices": []
 		},
 		{
@@ -27,9 +29,9 @@
 				57,
 				23
 			],
-			"anim": "singLEFT",
+			"name": "singLEFT",
 			"fps": 24,
-			"name": "ElLeftSMALL",
+			"prefix": "ElLeftSMALL",
 			"indices": []
 		},
 		{
@@ -42,9 +44,9 @@
 				10,
 				-46
 			],
-			"anim": "singDOWN",
+			"name": "singDOWN",
 			"fps": 24,
-			"name": "ElDownSMALL",
+			"prefix": "ElDownSMALL",
 			"indices": []
 		},
 		{
@@ -57,9 +59,9 @@
 				-8,
 				3
 			],
-			"anim": "singRIGHT",
+			"name": "singRIGHT",
 			"fps": 24,
-			"name": "ElRightSMALL",
+			"prefix": "ElRightSMALL",
 			"indices": []
 		},
 		{
@@ -72,14 +74,13 @@
 				-20,
 				50
 			],
-			"anim": "singUP",
+			"name": "singUP",
 			"fps": 24,
-			"name": "ElUpSMALL",
+			"prefix": "ElUpSMALL",
 			"indices": []
 		}
 	],
 	"no_antialiasing": false,
-	"assetPath": "characters/Lookalike_Assets",
 	"position": [
 		130,
 		280

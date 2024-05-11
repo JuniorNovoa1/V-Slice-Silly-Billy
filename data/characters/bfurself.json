@@ -1,6 +1,7 @@
 {
   "version": "1.0.0",
-  "renderType": "multisparrow",
+  "renderType": "sparrow",
+  "name": "BF (Urself)",
   "assetPath": "characters/Yourself_BF_Assets",
   "flipX": true,
   "singTime": 8.0,

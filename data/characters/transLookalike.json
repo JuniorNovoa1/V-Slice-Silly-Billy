@@ -1,6 +1,8 @@
 {
 	"version": "1.0.0",
-	"renderType": "multisparrow",
+	"name": "evilLookalike-anim1",
+	"assetPath": "characters/Lookalike_Alt",
+	"renderType": "sparrow",
 	"animations": [
 		{
 			"loop": false,
@@ -12,14 +14,13 @@
 				0,
 				0
 			],
-			"anim": "Smallize",
+			"name": "Smallize",
 			"fps": 24,
-			"name": "ElUngrow",
+			"prefix": "ElUngrow",
 			"indices": []
 		}
 	],
 	"no_antialiasing": false,
-	"assetPath": "characters/Lookalike_Alt",
 	"position": [
 		0,
 		-180
