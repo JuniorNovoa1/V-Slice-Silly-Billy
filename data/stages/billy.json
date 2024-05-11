@@ -3,7 +3,7 @@
     {
       "danceEvery": 0,
       "zIndex": 10,
-      "position": [0, 0],
+      "position": [-325, -700],
       "scale": [1, 1],
       "animType": "sparrow",
       "name": "mirror",
@@ -15,7 +15,7 @@
     {
       "danceEvery": 0,
       "zIndex": 20,
-      "position": [0, 0],
+      "position": [-325, -700],
       "scale": [1.1, 1.1],
       "name": "Silly_floor",
       "isPixel": false,
@@ -29,7 +29,7 @@
     {
       "danceEvery": 0,
       "zIndex": 30,
-      "position": [0, 0],
+      "position": [-325, -700],
       "scale": [1.1, 1.1],
       "name": "Silly_idk_1",
       "isPixel": false,
@@ -43,7 +43,7 @@
     {
       "danceEvery": 0,
       "zIndex": 310,
-      "position": [0, 0],
+      "position": [-325, -700],
       "scale": [1.1, 1.1],
       "name": "Silly_idk_2",
       "isPixel": false,
@@ -57,7 +57,7 @@
     {
       "danceEvery": 0,
       "zIndex": 320,
-      "position": [0, 0],
+      "position": [-325, -700],
       "scale": [1366, 768],
       "name": "blackScreen",
       "isPixel": false,
@@ -70,18 +70,18 @@
   "characters": {
     "bf": {
       "zIndex": 300,
-      "position": [1630, 900],
-      "cameraOffsets": [0, 0]
+      "position": [1700, 1300],
+      "cameraOffsets": [-200, -200]
     },
     "dad": {
       "zIndex": 200,
-      "position": [840, 840],
-      "cameraOffsets": [0, 0]
+      "position": [970, 1020],
+      "cameraOffsets": [60, -130]
     },
     "gf": {
       "zIndex": 100,
       "cameraOffsets": [0, 0],
-      "position": [430, 1300]
+      "position": [3430, 1300]
     }
   },
   "name": "billy"

@@ -1,15 +1,13 @@
-import flixel.FlxG;
-import flixel.math.FlxAngle;
-import funkin.Paths;
+import funkin.play.song.Song;
 import funkin.play.PlayState;
+import funkin.Paths;
 import funkin.play.cutscene.VideoCutscene;
 import funkin.play.cutscene.CutsceneType;
-import funkin.play.PlayStatePlaylist;
-import funkin.play.song.Song;
 
-class sillybilly extends Song {
+class sillybilly extends Song //WHY DOESN'T THIS SHIT WORK
+{
 	public function new() {
-		super('silly billy');
+		super('Silly Billy');
 	}
 
 	function onSongStart(event:ScriptEvent):Void

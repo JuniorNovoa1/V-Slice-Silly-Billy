@@ -1,0 +1,85 @@
+import funkin.play.song.Song;
+import funkin.play.PlayState;
+import funkin.Paths;
+import funkin.modding.module.Module;
+import flixel.FlxG;
+import flixel.text.FlxText;
+import Std;
+import funkin.Conductor;
+import funkin.data.event.SongEventRegistry;
+
+class Debug extends Module //WHY DOESN'T THIS SHIT WORK
+{
+	public function new() {
+		super('Debug');
+	}
+
+	var debugTxt:FlxText;
+	function onSongStart(event:ScriptEvent):Void
+	{
+		super.onSongStart(event);
+		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+		debugTxt = new FlxText();
+		debugTxt.setFormat(Paths.font('vcr.ttf'), 128, Std.parseInt(0xFFFFFF), null, null, Std.parseInt(0x000000));
+		debugTxt.borderSize = 2;
+		debugTxt.cameras = [PlayState.instance.camCutscene];
+		debugTxt.text = '';
+		debugTxt.x = 12;
+		debugTxt.y = 200;
+		PlayState.instance.add(debugTxt);
+	}
+
+	function changeSection(sections:Int):Void
+	{
+		// FlxG.sound.music.pause();
+		PlayState.instance.health = 2;
+	  
+		var targetTimeSteps:Float = Conductor.instance.currentStepTime + (Conductor.instance.stepsPerMeasure * sections);
+		var targetTimeMs:Float = Conductor.instance.getStepTimeInMs(targetTimeSteps);
+	  
+		  // Don't go back in time to before the song started.
+		targetTimeMs = Math.max(0, targetTimeMs);
+	  
+		if (FlxG.sound.music != null)
+		{
+			FlxG.sound.music.time = targetTimeMs;
+		}
+	  
+		PlayState.instance.handleSkippedNotes();
+		SongEventRegistry.handleSkippedEvents(PlayState.instance.songEvents, Conductor.instance.songPosition);
+		  // regenNoteData(FlxG.sound.music.time);
+	  
+		Conductor.instance.update(FlxG.sound.music.time);
+	  
+		PlayState.instance.resyncVocals();
+	}
+
+	var stepNbeatArray:Array<Float> = [0, 0];
+	function onUpdate(event:UpdateScriptEvent) 
+	{
+		if (PlayState.instance == null || PlayState.instance.currentStage == null || debugTxt == null) return;
+		super.onUpdate(event);
+		debugTxt.text = '' + stepNbeatArray[0] + "\n" + stepNbeatArray[1];
+
+		var shiftMultiplier = 1;
+		if (FlxG.keys.pressed.SHIFT)
+			shiftMultiplier = 10;
+		if (FlxG.keys.justPressed.RIGHT)
+			changeSection(1 * shiftMultiplier);
+		else if (FlxG.keys.justPressed.LEFT)
+			changeSection(-(1 * shiftMultiplier));
+	}
+
+	function onStepHit(event:SongTimeScriptEvent):Void
+	{
+		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+		super.onStepHit(event);
+		stepNbeatArray[0] = event.step;
+	}
+	function onBeatHit(event:SongTimeScriptEvent):Void
+	{
+		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+		super.onBeatHit(event);
+		stepNbeatArray[1] = event.beat;
+	}
+}

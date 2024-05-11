@@ -5,41 +5,337 @@ import funkin.play.PlayState;
 import funkin.play.stage.Stage;
 import funkin.play.cutscene.VideoCutscene;
 import funkin.play.cutscene.CutsceneType;
+import funkin.graphics.FunkinSprite;
+import funkin.play.Countdown;
+import funkin.Conductor;
+import flixel.FlxSprite;
+import funkin.play.event.SongEvent;
+import funkin.graphics.adobeanimate.FlxAtlasSprite;
+import flixel.tweens.FlxEase;
+import funkin.util.Constants;
+import flixel.FlxCamera;
+import Type;
+import flixel.tweens.FlxTween;
+import flixel.ui.FlxBar;
+import openfl.filters.ShaderFilter;
 
-class Billy extends Stage
+class Billy extends Stage //This is indeed a stage script, I couldn't get the song script to work because I'm stupid.
 {
 	function new()
 	{
 		super('billy');
 	}
 
+	var blue:ShaderFilter;
+	var blueShader:FlxShader;
+	var currentStage;
+	var bgSprite:FunkinSprite;
 	function onCreate(event:ScriptEvent):Void
 	{
 		super.onCreate(event);
+		currentStage = PlayState.instance.currentStage;
+		bgSprite = new FunkinSprite(-100, -100);
+		bgSprite.makeSolidColor(2000, 2500, 0xFF000000);
+		bgSprite.cameras = [PlayState.instance.camCutscene];
+		//bgSprite.zIndex = 100;
+		PlayState.instance.add(bgSprite);
+		PlayState.instance.refresh();
+		VideoCutscene.onVideoEnded.removeAll();
+		/*blueShader = Paths.frag("blue");
+		blueShader.data.hue.value = [1.3];
+		blueShader.data.pix.value = [0.00001];
+		blue = new ShaderFilter(blueShader);*/
+		//camera.follow(PlayState.instance.cameraFollowPoint, null, 1);
+	}
+
+	function onCreatePost():Void
+	{
+		//PlayState.instance.camGame.bgColor.alpha = 0; // Show behind camera.
+		PlayState.instance.healthBar.visible = false;
+		PlayState.instance.healthBarBG.visible = false;
+		PlayState.instance.iconP1.visible = false;
+		PlayState.instance.iconP2.visible = false;
+		PlayState.instance.comboPopUps.visible = false; //don't show score stuff
+		getNamedProp('mirror').useColorTransform = true;
+
+		lyric = new FlxAtlasSprite(0, 0, Paths.animateAtlas("lyric", "shared"));
+		lyric.showPivot = false;
+		lyric.anim.addBySymbol('2RECOVER_SILLIEST_LYRICE_DONE', '2RECOVER_SILLIEST_LYRICE_DONE',0,0,24);
+		lyric.anim.addBySymbol('story_of_yourtalebilly', 'story_of_yourtalebilly',0,0,24);
+		lyric.antialiasing = true;
+		lyric.visible = false;
+		PlayState.instance.add(lyric);
+		/*var opponentStrumline:FlxSprite = PlayState.instance.opponentStrumline;
+		var dumbdumbpos = -1;
+		if (opponentStrumline != null)
+		{
+			for (arrow in opponentStrumline.members)
+			{
+				dumbdumbpos += 1;
+				arrow.camera = PlayState.instance.camGame;
+				arrow.scrollFactor.set(0.9, 0.9);
+				arrow.alpha = 0.6;
+				arrow.scale.x *= 1.2;
+				arrow.scale.y *= 1.2;
+				arrow.x += 550 + (0 * dumbdumbpos);
+				arrow.y -= 3000;
+			}
+		}*/
+
+	}
+
+	function onCountdownStart(event:CountdownScriptEvent):Void
+	{
+		super.onCountdownStart(event);
+		event.cancel();
+		PlayState.instance.isInCountdown = true;
+		PlayState.instance.startingSong = false;
+		Conductor.instance.update(0);
+		PlayState.instance.startSong();
+		onCreatePost();
+
+		PlayState.instance.playerStrumline.camera = PlayState.instance.camCutscene;
+		PlayState.instance.opponentStrumline.camera = PlayState.instance.camCutscene;
+		PlayState.instance.playerStrumline.visible = false;
+		PlayState.instance.opponentStrumline.visible = false;
+		PlayState.instance.scoreText.visible = false;
+		PlayState.instance.scoreText.cameras = [PlayState.instance.camCutscene];
 	}
 
 	function onSongStart(event:ScriptEvent):Void
 	{
 		super.onSongStart(event);
+		VideoCutscene.play(Paths.videos('open'), CutsceneType.MIDSONG);
+		VideoCutscene.onVideoEnded.add(function(){
+			PlayState.instance.mayPauseGame = true;
+			PlayState.instance.playerStrumline.visible = true;
+			PlayState.instance.opponentStrumline.visible = true;
+			PlayState.instance.scoreText.visible = true;
+			VideoCutscene.onVideoEnded.removeAll();
+		});
+		bgSprite.visible = false;
+		PlayState.instance.isInCutscene = false;
+		PlayState.instance.mayPauseGame = false;
 	}
 
+	var lyric:FlxAnimate;
+	var bars:FlxSprite;
+
+	var bar:FlxSprite;
+	var iconOpp:FlxSprite;
+	var iconP:FlxSprite;
+	var actualBar:FlxBar;
+	var evilBar:FlxBar;
+	
 	override function buildStage()
 	{
 		super.buildStage();
+
+		var vig = new FunkinSprite().loadGraphic(Paths.image('vignette'));
+		vig.cameras = [PlayState.instance.camCutscene];
+		PlayState.instance.add(vig);
+
+		bars = new FunkinSprite().loadGraphic(Paths.image('bars'));
+		bars.cameras = [PlayState.instance.camCutscene];
+		PlayState.instance.add(bars);
+
+		bar = new FlxSprite().loadGraphic(Paths.image("Bar/Silly_Healthbar"));
+		bar.cameras = [PlayState.instance.camCutscene];
+		bar.scale.set(0.5, 0.5);
+		bar.updateHitbox();
+		bar.screenCenter();
+		bar.x -= 250;
+		bar.y = (PlayState.instance.healthBarBG.y - (bar.height / 2)) - 25;
+	
+		actualBar = new FlxBar(0, 0, Type.resolveEnum('flixel.ui.FlxBar.FlxBarFillDirection.LEFT_TO_RIGHT'), 327.805, 28);
+		actualBar.cameras = [PlayState.instance.camCutscene];
+		actualBar.createGradientBar([0xFF000000, 0xFF000000], [0xFF1565C0, 0xFFFFFFFF], 1, 90);
+		actualBar.updateBar();
+		actualBar.setPosition(419, 614);
+		PlayState.instance.add(actualBar);
+		evilBar = new FlxBar(0, 0, Type.resolveEnum('flixel.ui.FlxBar.FlxBarFillDirection.RIGHT_TO_LEFT'), 330.805, 36);
+		evilBar.cameras = [PlayState.instance.camCutscene];
+		evilBar.createGradientBar([0xFF000000, 0xFF000000], [0xFF8A0101, 0xFF000000], 1, 90);
+		evilBar.updateBar();
+		evilBar.setPosition(405 - evilBar.width - 25, 613.8);
+		evilBar.flipX = true;
+		PlayState.instance.add(evilBar);
+		PlayState.instance.add(bar);
+	
+		iconP = new FlxSprite().loadGraphic(Paths.image("Bar/icons/bficon"));
+		iconP.loadGraphic(Paths.image("Bar/icons/bficon"), true, Math.floor(iconP.width / 2), Math.floor(iconP.height));
+		iconP.animation.add('bf', [0, 1], 0, false, true);
+		iconP.animation.play('bf');
+		iconP.cameras = [PlayState.instance.camCutscene];
+		iconP.setPosition(400, (bar.y + (bar.height / 2) - (iconP.height / 2)));
+		iconP.flipX = true;
+		PlayState.instance.add(iconP);
+	
+		iconOpp = new FlxSprite();
+		iconOpp.loadGraphic(Paths.image("Bar/icons/billyicon"));
+		iconOpp.loadGraphic(Paths.image("Bar/icons/billyicon"), true, Math.floor(iconOpp.width / 5), Math.floor(iconOpp.height));
+		iconOpp.animation.add('0', [0], 0, false, false);
+		iconOpp.animation.add('1', [1], 0, false, false);
+		iconOpp.animation.add('2', [2], 0, false, false);
+		iconOpp.animation.add('3', [3], 0, false, false);
+		iconOpp.animation.add('4', [4], 0, false, false);
+		iconOpp.animation.play('1');
+		iconOpp.cameras = [PlayState.instance.camCutscene];
+		iconOpp.setPosition(405 - iconOpp.width, (bar.y + (bar.height / 2) - (iconOpp.height / 2)));
+		PlayState.instance.add(iconOpp);
+	
+		iconOpp.centerOffsets();
+		iconP.centerOffsets();
 	}
 
+	function tweenCameraZoom(zoom, duration, isDirectMode, ease):Void
+	{
+		var durSeconds = Conductor.instance.stepLengthMs * duration / 1000;
+
+        PlayState.instance.tweenCameraZoom(zoom, durSeconds, isDirectMode, ease);
+	}
+
+	var mustHitSection:Bool = false;
 	function onUpdate(event:UpdateScriptEvent):Void
 	{
 		super.onUpdate(event);
+		if (PlayState.instance.healthBar != null) {
+			actualBar.percent = PlayState.instance.healthBar.percent;
+			evilBar.percent = 100 - PlayState.instance.healthBar.percent;
+		}
+	
+		PlayState.instance.scoreText.x = 213.75 - (PlayState.instance.scoreText.width / 3);
+	
+		var percent = (PlayState.instance.health / 2) * 100;
+		if (percent < 20){
+			iconP.animation.curAnim.curFrame = 1;
+		}
+		else{
+			iconP.animation.curAnim.curFrame = 0;
+		}
+
+		if (PlayState.instance.cameraFollowPoint.x == currentStage.getDad().cameraFocusPoint.x) mustHitSection = false; else mustHitSection = true;
+
+		if (!mustHitSection)
+			tweenCameraZoom(0.625, 3, true, FlxEase.linear);
+		else
+			tweenCameraZoom(0.5, 3, true, FlxEase.linear);
 	}
+
+	var objects = [];
+	var prevIndex = 0;
 
 	function onBeatHit(event:SongTimeScriptEvent):Void
 	{
 		super.onBeatHit(event);
+		switch(event.beat) 
+		{
+			case 335: //transform
+				//
+			case 339: //short char
+				//
+			case 488: //transform back
+				//
+			case 492: //tall char again
+				//
+			case 802: //I'LL MAKEEEE
+				objects = [bar,iconOpp,iconP,actualBar,evilBar,PlayState.instance.scoreText];
+				for (i in 0...objects.length)
+				{
+					FlxTween.tween(objects[i], {alpha: 0}, 1);
+				}
+				FlxTween.tween(PlayState.instance.playerStrumline, {alpha: 0}, 1);
+				FlxTween.tween(PlayState.instance.camHUD, {alpha: 0}, 1);
+				tweenCameraZoom(0.625, 3, true, FlxEase.linear);
+				tweenCameraZoom(0.625, 3, true, FlxEase.linear);
+				currentStage.getDad().visible = false;
+				lyric.setPosition(currentStage.getDad().x + 720, currentStage.getDad().y + 470);
+				lyric.visible = true;
+				lyric.anim.play('story_of_yourtalebilly', false, false);
+			case 812: //you sayy
+				
+			case 820: //how proud you are
+			case 826: //of me
+			case 833: //CUTSCENE
+				var playerStrumline:FlxSprite = PlayState.instance.playerStrumline;
+				if (playerStrumline != null)
+				{
+					playerStrumline.x = FlxG.width / 2 - playerStrumline.width / 2;
+					playerStrumline.alpha = 0;
+				}
+				PlayState.instance.opponentStrumline.visible = false;
+				bgSprite.visible = true;
+				bars.zIndex = 1000;
+				VideoCutscene.play(Paths.videos('SO_STAY_FINAL'), CutsceneType.MIDSONG);
+				VideoCutscene.onVideoEnded.add(function(){
+					//shaders
+					/*PlayState.instance.camGame.setFilters([new ShaderFilter(blue)]);
+                    PlayState.instance.camHUD.setFilters([new ShaderFilter(blue)]);
+					PlayState.instance.camCutscene.setFilters([new ShaderFilter(blue)]);*/
+					PlayState.instance.mayPauseGame = true;
+					bgSprite.visible = false;
+
+					for (i in 0...objects.length)
+					{
+						objects[i].alpha = 0;
+					}
+					if (playerStrumline != null)
+					{
+						FlxTween.tween(PlayState.instance.playerStrumline, {x: PlayState.instance.playerStrumline.x * 1.7}, 1);
+					}
+					PlayState.instance.camHUD.alpha = 1;
+					//bars.camera = PlayState.instance.camHUD;
+					//bars.zIndex = prevIndex;
+					//PlayState.instance.playerStrumline.camera = PlayState.instance.camHUD;
+					PlayState.instance.camGame.flash(0xFF000000, 2);  
+                    lyric.visible = false;
+                    currentStage.getDad().visible = true;
+                    PlayState.instance.camGame.zoom = 1.1;
+				});
+				PlayState.instance.isInCutscene = false;
+				PlayState.instance.mayPauseGame = false;
+			case 864:
+				FlxTween.tween(PlayState.instance.playerStrumline, {alpha: 1}, 1);
+			case 996:
+				bgSprite.visible = true;
+			case 998: //fade strums out
+				var playerStrumline:FlxSprite = PlayState.instance.playerStrumline;
+				if (playerStrumline != null)
+					FlxTween.tween(PlayState.instance.playerStrumline, {alpha: 0}, 3);
+		}
 	}
 
 	function onSongRetry(event:ScriptEvent)
 	{
 		super.onSongRetry(event);
+		onCreate();
+	}
+
+	function onNoteIncoming(event:NoteScriptEvent):Void
+	{
+		/*if (event.note.noteData.getMustHitNote())
+			return;
+		event.note.x += 550;
+		event.note.scrollFactor.set(0.9, 0.9);
+		event.note.alpha = 0.6;
+		event.note.scale.x *= 1.2;
+		event.note.scale.y *= 1.2;*/
+	}
+
+	function onNoteHit(event:HitNoteScriptEvent):Void
+	{
+		if (!event.note.noteData.getMustHitNote()) PlayState.instance.vocals.opponentVolume = 1;
+		if ((mustHitSection && event.note.noteData.getMustHitNote()) || (!mustHitSection && !event.note.noteData.getMustHitNote())) {
+			FlxG.camera.targetOffset.set(0,0);
+			if (event.note.direction == 0) FlxG.camera.targetOffset.x = -30;
+			if (event.note.direction == 1) FlxG.camera.targetOffset.y = 30;
+			if (event.note.direction == 2) FlxG.camera.targetOffset.y = -30;
+			if (event.note.direction == 3) FlxG.camera.targetOffset.x = 30;
+		} 
+
+		if (PlayState.instance.opponentStrumline == null || event.note.noteData.getMustHitNote())
+			return;
+		if(PlayState.instance.health >= 0.1)
+			PlayState.instance.health -= Constants.HEALTH_SICK_BONUS * 0.5;
 	}
 }
