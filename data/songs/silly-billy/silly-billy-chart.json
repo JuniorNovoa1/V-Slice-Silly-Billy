@@ -1,8 +1,8 @@
 {
   "version": "2.0.0",
   "scrollSpeed": {
-    "default": 3,
-    "normal": 3
+    "normal": 3,
+    "default": 3
   },
   "events": [
     {
@@ -325,6 +325,17 @@
       "e": "FocusCamera",
       "v": {
 	"char": 0
+}
+    },
+    {
+      "t": 290909.090909091,
+      "e": "FocusCamera",
+      "v": {
+	"x": 0,
+	"duration": 4,
+	"y": 0,
+	"char": 1,
+	"ease": "linear"
 }
     },
     {

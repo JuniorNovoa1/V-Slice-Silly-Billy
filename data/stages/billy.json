@@ -76,12 +76,12 @@
     "dad": {
       "zIndex": 200,
       "position": [970, 1020],
-      "cameraOffsets": [60, -130]
+      "cameraOffsets": [60, -150]
     },
     "gf": {
       "zIndex": 100,
       "cameraOffsets": [0, 0],
-      "position": [3430, 1300]
+      "position": [1400, 950]
     }
   },
   "name": "billy"
