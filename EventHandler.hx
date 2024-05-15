@@ -1,6 +1,5 @@
 import funkin.play.PlayState;
 //Song Events
-import funkin.play.event.SongEvent;
 import funkin.play.event.ScriptedSongEvent;
 import funkin.modding.events.SongLoadScriptEvent;
 //Modules
@@ -34,12 +33,6 @@ class EventHandler extends ScriptedSongEvent {
             }
         ];
     }
-
-    override function handleEvent(data) {
-        if (data.value != null) {
-            //do shit here!!!
-        }
-	}
 }
 
 class EventHandlerModule extends Module {
