@@ -16,23 +16,29 @@ class EventHandler extends ScriptedSongEvent {
             {
                 name: 'eventname',
                 title: 'Event Name',
-                type: "string",
-                defaultValue: 'Blank',
+                type: 'string',
+                defaultValue: 'nil',
             },
             {
                 name: 'value1',
                 title: 'Value 1',
-                type: "string",
-                defaultValue: 'Blank',
+                type: 'string',
+                defaultValue: 'nil',
             },
             {
                 name: 'value2',
                 title: 'Value 2',
-                type: "string",
-                defaultValue: 'Blank'
+                type: 'string',
+                defaultValue: 'nil',
             }
         ];
     }
+
+    override function handleEvent(data) {
+		if (data.value != null) {
+			//shiii
+		}
+	}
 }
 
 class EventHandlerModule extends Module {
