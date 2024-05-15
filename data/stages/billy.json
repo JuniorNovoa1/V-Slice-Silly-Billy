@@ -53,16 +53,6 @@
         {"name": "Silly_idk_2", "prefix": "Silly_idk_2"}
       ],
       "startingAnimation": "Silly_idk_2"
-    },
-    {
-      "danceEvery": 0,
-      "zIndex": 320,
-      "position": [-325, -700],
-      "scale": [1366, 768],
-      "name": "blackScreen",
-      "isPixel": false,
-      "assetPath": "0xFF000000",
-      "scroll": [0, 0]
     }
   ],
   "cameraZoom": 0.725,

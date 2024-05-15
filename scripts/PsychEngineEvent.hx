@@ -1,44 +1,49 @@
-import funkin.play.character.CharacterType;
-import funkin.modding.module.ModuleHandler;
+//Modules
 import funkin.modding.module.Module;
-import funkin.play.character.BaseCharacter;
-import funkin.play.character.CharacterDataParser;
+import funkin.modding.module.ModuleHandler;
+//Events
 import funkin.play.event.SongEvent;
 import funkin.play.event.ScriptedSongEvent;
+//The BIG guy!
 import funkin.play.PlayState;
 
-class PsychEngineEvent extends ScriptedSongEvent
-{
-	  public function new()
+class PsychEngineEvent extends SongEvent {
+    public override function handleEvent(data) {
+		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+		if (PlayState.instance.isMinimalMode) return;
+	}
+
+    public function getEventSchema()
     {
-        super('Psych Event');
+        return [
+            {
+                name: 'name',
+                title: 'Event Name',
+                type: "string",
+                defaultValue: 'null',
+            },
+            {
+                name: 'value1',
+                title: 'Value 1',
+                type: "string",
+                defaultValue: 'nil',
+            },
+            {
+                name: 'value2',
+                title: 'Value 2',
+                type: "string",
+                defaultValue: 'nil'
+            }
+        ];
     }
 
-    public override function getTitle()
+    public function getTitle()
     {
         return "Psych Event";
     }
 
-    override function getEventSchema()
+    public function new()
     {
-        return [
-        {
-            name: 'name',
-            title: 'Event Name',
-            type: SongEventFieldType.STRING,
-            defaultValue: 'null',
-        },
-        {
-            name: 'value1',
-            title: 'Value 1',
-            type: SongEventFieldType.STRING,
-            defaultValue: '',
-        },
-        {
-            name: 'value2',
-            title: 'Value 2',
-            type: SongEventFieldType.STRING,
-            defaultValue: ''
-        }];
+        super('Psych Event');
     }
 }
