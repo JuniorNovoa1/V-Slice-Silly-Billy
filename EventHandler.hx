@@ -1,10 +1,10 @@
-import funkin.play.PlayState;
-//Song Events
 import funkin.play.event.ScriptedSongEvent;
 import funkin.modding.events.SongLoadScriptEvent;
 //Modules
 import funkin.modding.module.Module;
 import funkin.modding.module.ModuleHandler;
+
+import funkin.play.PlayState;
 
 class EventHandler extends ScriptedSongEvent {
     override function new() {
@@ -38,5 +38,10 @@ class EventHandler extends ScriptedSongEvent {
 class EventHandlerModule extends Module {
 	public function new() {
 		super('event-handler-module');
+	}
+
+    override function onCreate(e) {
+        for (i in 0...10)
+		    trace('whaaat are you working now bitch');
 	}
 }
