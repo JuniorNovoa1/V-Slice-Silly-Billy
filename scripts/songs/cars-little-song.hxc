@@ -1,0 +1,122 @@
+import flixel.FlxG;
+import funkin.play.song.Song;
+import funkin.play.PlayState;
+import funkin.Paths;
+import funkin.play.cutscene.VideoCutscene;
+import funkin.play.cutscene.CutsceneType;
+import funkin.modding.module.ModuleHandler;
+import funkin.graphics.FunkinSprite;
+import funkin.play.Countdown;
+import funkin.Conductor;
+
+class carsong extends Song //WHY DOESN'T THIS SHIT WORK
+{
+	public function new() {
+		super('cars-little-song');
+	}
+
+	function realvideopath(path):String
+	{
+		return "mods/hitsingle/videos/videos/" + path + ".mp4";
+		if (Assets.exists(Paths.videos(path)) == true)
+			return Paths.videos(path);
+		if (Assets.exists(Paths.videos("mods/hitsingle/videos/videos/" + path + ".mp4")) == true) //for some reason `Paths.videos(path)` doesn't work with mods, so this is a simple workaround.
+			return "mods/hitsingle/videos/videos/" + path + ".mp4";
+		return "";
+	}
+
+	var bgSprite:FunkinSprite;
+	function onCreate(event:ScriptEvent):Void
+	{
+		super.onCreate(event);
+	}
+	function onCountdownStart(event:CountdownScriptEvent):Void
+	{
+		super.onCountdownStart(event);
+		bgSprite = new FunkinSprite(0, 0);
+		bgSprite.makeSolidColor(1280, 720, 0xFF000000);
+		bgSprite.cameras = [PlayState.instance.camCutscene];
+		PlayState.instance.add(bgSprite);
+		PlayState.instance.refresh();
+		VideoCutscene.onVideoEnded.removeAll();
+		event.cancel();
+		PlayState.instance.isInCountdown = true;
+		PlayState.instance.startingSong = false;
+		Conductor.instance.update(0);
+		PlayState.instance.startSong();
+
+		PlayState.instance.healthBar.visible = false;
+		PlayState.instance.healthBarBG.visible = false;
+		PlayState.instance.iconP1.visible = false;
+		PlayState.instance.iconP2.visible = false;
+		PlayState.instance.opponentStrumline.visible = false;
+		PlayState.instance.scoreText.cameras = [PlayState.instance.camCutscene];
+	}
+	function onSongStart(event:ScriptEvent):Void
+	{
+		super.onSongStart(event);
+		PlayState.instance.playerStrumline.cameras = [PlayState.instance.camCutscene];
+		PlayState.instance.playerStrumline.x = FlxG.width / 2 - PlayState.instance.playerStrumline.width / 2;
+		if (realvideopath('CarVideo') != "") {
+			VideoCutscene.play(realvideopath('CarVideo'), CutsceneType.MIDSONG);
+			PlayState.instance.isInCutscene = false;
+			//VideoCutscene.vid.setGraphicSize(320, 240);
+		}
+	}
+
+	var isMissVideo:Bool = false;
+	//change video when miss and change when hit note!!!
+	public function onNoteHit(event:HitNoteScriptEvent) 
+	{
+		super.onNoteHit(event);
+		if (isMissVideo) {
+			if (realvideopath('CarVideo') != "") {
+				VideoCutscene.play(realvideopath('CarVideo'), CutsceneType.MIDSONG);
+				PlayState.instance.isInCutscene = false;
+				VideoCutscene.vid.bitmap.time = Conductor.instance.songPosition;
+			}
+			isMissVideo = false;
+		}
+	}
+
+	public function onNoteMiss(event:NoteScriptEvent) 
+	{
+		super.onNoteMiss(event);
+		if (!isMissVideo) {
+			if (realvideopath('CarVideoMissing') != "") {
+				VideoCutscene.play(realvideopath('CarVideoMissing'), CutsceneType.MIDSONG);
+				PlayState.instance.isInCutscene = false;
+				VideoCutscene.vid.bitmap.time = Conductor.instance.songPosition;
+			}
+			isMissVideo = true;
+		}
+	}
+
+	function onUpdate(event:UpdateScriptEvent):Void
+	{
+		super.onUpdate(event);
+		if (VideoCutscene.vid != null) {
+			VideoCutscene.vid.setGraphicSize(820, 720);
+			//VideoCutscene.vid.bitmap.time = Conductor.instance.songPosition;
+		}
+	}
+
+	public override function onPause(event:PauseScriptEvent) {
+		super.onPause(event);
+		if (VideoCutscene.vid == null) return;
+		VideoCutscene.pauseVideo();
+	}
+
+	public override function onResume(event:ScriptEvent) {
+		super.onResume(event);
+		if (VideoCutscene.vid == null) return;
+		VideoCutscene.resumeVideo();
+	}
+
+	override function onSongEnd(event:ScriptEvent):Void {
+		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+		bgSprite.camera = PlayState.instance.camHUD;
+		PlayState.instance.playerStrumline.camera = PlayState.instance.camHUD;
+		PlayState.instance.scoreText.camera = PlayState.instance.camHUD;
+	}
+}

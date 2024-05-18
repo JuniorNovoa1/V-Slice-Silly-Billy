@@ -59,7 +59,7 @@ class Debug extends Module //WHY DOESN'T THIS SHIT WORK
 	{
 		if (PlayState.instance == null || PlayState.instance.currentStage == null || debugTxt == null) return;
 		super.onUpdate(event);
-		debugTxt.text = '' + stepNbeatArray[0] + "\n" + stepNbeatArray[1];
+		debugTxt.text = 'Step:' + stepNbeatArray[0] + "\nBeat:" + stepNbeatArray[1];
 
 		var shiftMultiplier = 1;
 		if (FlxG.keys.pressed.SHIFT)

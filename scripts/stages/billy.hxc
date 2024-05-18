@@ -429,6 +429,16 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 		}
 	}
 
+	public override function onPause(event:PauseScriptEvent) {
+		super.onPause(event);
+		VideoCutscene.pauseVideo();
+	}
+
+	public override function onResume(event:ScriptEvent) {
+		super.onResume(event);
+		VideoCutscene.resumeVideo();
+	}
+	
 	function onSongRetry(event:ScriptEvent)
 	{
 		super.onSongRetry(event);
