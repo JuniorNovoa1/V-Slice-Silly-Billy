@@ -1,6 +1,6 @@
 {
   "version": "2.2.2",
-  "songName": "cars-little-song",
+  "songName": "Car's Little Song",
   "artist": "NULL",
   "looped": false,
   "offsets": {
@@ -17,11 +17,11 @@
       "player": "bf",
       "girlfriend": "gf",
       "opponent": "pico",
-      "instrumental": "mom",
+      "instrumental": "",
       "altInstrumentals": [      ]
     },
     "stage": "mainStage",
-    "noteStyle": "item",
+    "noteStyle": "",
     "ratings": {
       "normal": 0
     },

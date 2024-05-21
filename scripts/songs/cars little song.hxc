@@ -12,7 +12,7 @@ import funkin.Conductor;
 class carsong extends Song //WHY DOESN'T THIS SHIT WORK
 {
 	public function new() {
-		super('cars-little-song');
+		super("cars-little-song");
 	}
 
 	function realvideopath(path):String

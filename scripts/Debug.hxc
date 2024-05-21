@@ -18,7 +18,7 @@ class Debug extends Module //WHY DOESN'T THIS SHIT WORK
 	function onSongStart(event:ScriptEvent):Void
 	{
 		super.onSongStart(event);
-		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+		if (PlayState.instance == null || PlayState.instance.currentStage == null || debugTxt != null) return;
 		debugTxt = new FlxText();
 		debugTxt.setFormat(Paths.font('vcr.ttf'), 128, Std.parseInt(0xFFFFFF), null, null, Std.parseInt(0x000000));
 		debugTxt.borderSize = 2;
@@ -29,7 +29,7 @@ class Debug extends Module //WHY DOESN'T THIS SHIT WORK
 		PlayState.instance.add(debugTxt);
 	}
 
-	function changeSection(sections:Int):Void
+	function changeSection(sections:Int):Void //Source Code debugging
 	{
 		// FlxG.sound.music.pause();
 		PlayState.instance.health = 2;
@@ -81,5 +81,10 @@ class Debug extends Module //WHY DOESN'T THIS SHIT WORK
 		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
 		super.onBeatHit(event);
 		stepNbeatArray[1] = event.beat;
+	}
+
+	override function onSongEnd(event:ScriptEvent):Void {
+		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+		PlayState.instance.remove(debugTxt);
 	}
 }

@@ -7,16 +7,11 @@ import funkin.play.cutscene.CutsceneType;
 class sillybilly extends Song //WHY DOESN'T THIS SHIT WORK
 {
 	public function new() {
-		super('Silly Billy');
+		super('silly-billy');
 	}
 
 	function onSongStart(event:ScriptEvent):Void
 	{
 		super.onSongStart(event);
-		VideoCutscene.play(Paths.videos('open'), CutsceneType.MIDSONG);
-		/*VideoCutscene.onVideoEnded.add(function(){
-			PlayState.instance.isInCutscene = false;
-		});*/
-		PlayState.instance.isInCutscene = false;
 	}
 }
