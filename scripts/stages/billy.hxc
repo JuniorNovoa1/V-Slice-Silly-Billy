@@ -18,6 +18,8 @@ import Type;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import openfl.filters.ShaderFilter;
+import flixel.addons.display.FlxRuntimeShader;
+import funkin.modding.base.ScriptedFlxRuntimeShader;
 import funkin.play.character.BaseCharacter;
 import funkin.play.character.CharacterDataParser;
 import funkin.play.character.CharacterType;
@@ -34,8 +36,7 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 
 	private var songEnded:Bool = false;
 
-	var blue:ShaderFilter;
-	var blueShader:FlxShader;
+	var blue:FlxRuntimeShader;
 	var bgSprite:FunkinSprite;
 
 	var startingFocusPointsBF = [];
@@ -59,10 +60,7 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 		lyric.zIndex = 311;
 		add(lyric);
 		refresh();
-		/*blueShader = Paths.frag("blue");
-		blueShader.data.hue.value = [1.3];
-		blueShader.data.pix.value = [0.00001];
-		blue = new ShaderFilter(blueShader);*/
+		blue = ScriptedFlxRuntimeShader.init('BlueColorShader', 1.3, 0.00001);
 		//camera.follow(PlayState.instance.cameraFollowPoint, null, 1);
 	}
 
@@ -375,6 +373,8 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 					playerStrumline.alpha = 0;
 				}
 				PlayState.instance.opponentStrumline.visible = false;
+				PlayState.instance.camGame.setFilters([new ShaderFilter(blue)]);
+				PlayState.instance.camHUD.setFilters([new ShaderFilter(blue)]);
 				if (realvideopath('SO_STAY_FINAL') != "") {
 					objectsToOppositeCam(); //to cutscenecam
 					bars.zIndex = 1000;
@@ -499,5 +499,11 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 			return;
 		if(PlayState.instance.health >= 0.1)
 			PlayState.instance.health -= Constants.HEALTH_SICK_BONUS * 0.5;
+	}
+
+	function kill()
+	{
+		super.kill();
+		blue = null;
 	}
 }

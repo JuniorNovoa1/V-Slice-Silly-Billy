@@ -96,7 +96,7 @@ class carsong extends Song //WHY DOESN'T THIS SHIT WORK
 	{
 		super.onUpdate(event);
 		if (VideoCutscene.vid != null) {
-			VideoCutscene.vid.setGraphicSize(820, 720);
+			VideoCutscene.vid.setGraphicSize(320 * 3, 240 * 3);
 			//VideoCutscene.vid.bitmap.time = Conductor.instance.songPosition;
 		}
 	}
@@ -114,8 +114,9 @@ class carsong extends Song //WHY DOESN'T THIS SHIT WORK
 	}
 
 	override function onSongEnd(event:ScriptEvent):Void {
+		if (VideoCutscene.vid != null) VideoCutscene.pauseVideo();
 		if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
-		bgSprite.camera = PlayState.instance.camHUD;
+		if (bgSprite != null) bgSprite.camera = PlayState.instance.camHUD;
 		PlayState.instance.playerStrumline.camera = PlayState.instance.camHUD;
 		PlayState.instance.scoreText.camera = PlayState.instance.camHUD;
 	}

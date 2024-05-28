@@ -1,0 +1,38 @@
+import flixel.addons.display.FlxRuntimeShader;
+import funkin.Paths;
+import openfl.utils.Assets;
+
+class BlueColorShader extends FlxRuntimeShader
+{
+	function new(hue:Float = 1.3, pix:Float = 0.00001)
+	{
+		var fragText:String = Assets.getText(Paths.frag('blue'));
+		super(fragText);
+		this.setFloat("hue", hue);
+		this.setFloat("pix", pix);
+	}
+
+	function setValue(stringValue:String, value:Dynamic, type:String)
+	{
+		switch (type.toLowerCase()) {
+			case "float":
+				this.setFloat(stringValue, value);
+			case "int":
+				this.setInt(stringValue, value);
+			case "bool":
+				this.setBool(stringValue, value);
+		}
+	}
+
+	function getValue(stringValue:String, value:Dynamic, type:String)
+	{
+		switch (type.toLowerCase()) {
+			case "float":
+				this.getFloat(stringValue, value);
+			case "int":
+				this.getInt(stringValue, value);
+			case "bool":
+				this.getBool(stringValue, value);
+		}
+	}
+}
