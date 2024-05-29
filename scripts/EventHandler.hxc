@@ -1,0 +1,90 @@
+import funkin.modding.module.ModuleHandler;
+import funkin.modding.module.Module;
+import funkin.play.PlayState;
+import funkin.play.event.SongEvent;
+import funkin.modding.events.ScriptEvent;
+import funkin.play.event.ScriptedSongEvent;
+import funkin.play.character.BaseCharacter;
+import funkin.play.character.CharacterDataParser;
+import funkin.play.character.CharacterType;
+import flixel.FlxG;
+import Std;
+
+class EventHandler extends ScriptedSongEvent {
+    function new() {
+		super('PsychEvent');
+	}
+
+	static var changeCharacter = 'Change Character';
+	static var addCameraZoom = 'Add Camera Zoom';
+	
+    function handleEvent(data) {
+        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+        if (PlayState.instance.isMinimalMode) return;
+	}
+
+	function getEventSchema() {
+		var options = ["Change Character" => changeCharacter, "Add Camera Zoom" => addCameraZoom];
+		return [
+            {
+                name: "event",
+                title: "Event Name",
+				type: "enum",
+                defaultValue: changeCharacter,
+                keys: options,
+            },
+			{
+                name: "value1",
+                title: "Value 1",
+                defaultValue: "",
+                type: "string",
+			},
+			{
+                name: "value2",
+                title: "Value 2",
+                defaultValue: "",
+                type: "string",
+			}
+		];
+	}
+
+	function getTitle() {
+		return "Psych Event";
+	}
+}
+
+class EventHandlerModule extends Module {
+    public function new() {
+		super('EventHandlerModule');
+	}
+
+	function changeCharacter(newChar:String, type:CharacterType) {
+        if (type == CharacterType.DAD) PlayState.instance.currentStage.getDad(true);
+        if (type == CharacterType.BF) PlayState.instance.currentStage.getBoyfriend(true);
+        if (type == CharacterType.GF) PlayState.instance.currentStage.getGirlfriend(true);
+		//kills them
+		var char:BaseCharacter = CharacterDataParser.fetchCharacter(newChar);
+		char.characterType = type;
+		PlayState.instance.currentStage.addCharacter(char, type);
+		PlayState.instance.currentStage.refresh();
+		char.resetCharacter();
+	}
+
+	public override function onSongEvent(data:SongEventScriptEvent) {
+        super.onSongEvent(data);
+        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+        if (PlayState.instance.isMinimalMode) return;
+		var props = data.eventData;
+		var eventVal1 = props.value.value1;
+		var eventVal2 = props.value.value2;
+		switch(props.value.event) {
+			case 'Change Character':
+				if (eventVal1 == "bf" || eventVal1 == "boyfriend" || eventVal1 == "Bf" || eventVal1 == "Boyfriend")
+					changeCharacter(Std.string(eventVal2), CharacterType.BF);
+				if (eventVal1 == "dad" || eventVal1 == "opponent" || eventVal1 == "Dad" || eventVal1 == "Opponent")
+					changeCharacter(Std.string(eventVal2), CharacterType.DAD);
+				if (eventVal1 == "gf" || eventVal1 == "girlfriend" || eventVal1 == "Gf" || eventVal1 == "Girlfriend")
+					changeCharacter(Std.string(eventVal2), CharacterType.GF);
+		}
+    }
+}

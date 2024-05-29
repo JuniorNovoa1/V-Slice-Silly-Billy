@@ -259,6 +259,11 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 					mustHitSection = false;
 				default:
 			}
+
+			if (!mustHitSection)
+				tweenCameraZoom(0.625, 3, true, FlxEase.linear);
+			else
+				tweenCameraZoom(0.5, 3, true, FlxEase.linear);
 		}
 	}
 
@@ -272,11 +277,6 @@ class Billy extends Stage //This is indeed a stage script, I couldn't get the so
 		}
 	
 		PlayState.instance.scoreText.x = 213.75 - (PlayState.instance.scoreText.width / 3);
-	
-		if (!mustHitSection)
-			tweenCameraZoom(0.625, 3, true, FlxEase.linear);
-		else
-			tweenCameraZoom(0.5, 3, true, FlxEase.linear);
 
 		if (iconP != null) {
 			var percent = (PlayState.instance.health / 2) * 100;

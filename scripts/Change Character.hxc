@@ -1,0 +1,116 @@
+import funkin.modding.module.ModuleHandler;
+import funkin.modding.module.Module;
+import funkin.play.PlayState;
+import funkin.play.event.SongEvent;
+import funkin.modding.events.ScriptEvent;
+import funkin.play.event.ScriptedSongEvent;
+import funkin.play.character.BaseCharacter;
+import funkin.play.character.CharacterDataParser;
+import funkin.play.character.CharacterType;
+import flixel.FlxG;
+import Std;
+import funkin.util.assets.DataAssets;
+
+class ChangeCharacter extends ScriptedSongEvent {
+    function new() {
+		super('Change Character');
+	}
+
+	static var DAD = 'dad';
+	static var BF = 'bf';
+	static var GF = 'gf';
+	var charIdList = [];
+
+    function handleEvent(data) {
+        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+        if (PlayState.instance.isMinimalMode) return;
+	}
+
+	function getEventSchema() {
+		/*var tempCharIdList:Array<String> = DataAssets.listDataFilesInPath('characters/');
+		var stupidNameArray:Array<String> = [];
+		for (i in 0...tempCharIdList.length)
+		{
+			stupidNameArray.push(tempCharIdList[i]);
+			charIdList.push(tempCharIdList[i]);
+		}*/
+		var options = ["GF" => GF, "BF" => BF, "DAD" => DAD];
+		return [
+            {
+                name: "oldChar",
+                title: "Old Character",
+				type: "enum",
+				defaultValue: DAD,
+				keys: options
+            },
+			{
+                name: "value1",
+                title: "New Character",
+                /*type: "enum",
+				defaultValue: charIdList[0],
+				keys: charIdList,*/
+				defaultValue: "null",
+                type: "string"
+			},
+			{
+				name: "value2",
+                title: "X Offset",
+                type: "float",
+				defaultValue: 0,
+				step: 5,
+				units: 'px'
+			},
+			{
+				name: "value3",
+                title: "Y Offset",
+                type: "float",
+				defaultValue: 0,
+				step: 5,
+				units: 'px'
+			}
+		];
+	}
+
+	function getTitle() {
+		return "Change Character";
+	}
+}
+
+class ChangeCharacterModule extends Module {
+    public function new() {
+		super('ChangeCharacterModule');
+	}
+
+	function changeCharacter(newChar:String, type:CharacterType, xOffset:Float, yOffset:Float) {
+        if (type == CharacterType.DAD) PlayState.instance.currentStage.getDad(true);
+        if (type == CharacterType.BF) PlayState.instance.currentStage.getBoyfriend(true);
+        if (type == CharacterType.GF) PlayState.instance.currentStage.getGirlfriend(true);
+		//kills them
+		var char:BaseCharacter = CharacterDataParser.fetchCharacter(newChar);
+		char.characterType = type;
+		PlayState.instance.currentStage.addCharacter(char, type);
+		PlayState.instance.currentStage.refresh();
+		char.resetCharacter();
+		char.x += xOffset;
+		char.y += yOffset;
+	}
+
+	public override function onSongEvent(data:SongEventScriptEvent) {
+        super.onSongEvent(data);
+        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+        if (PlayState.instance.isMinimalMode) return;
+		var props = data.eventData;
+		var eventVal = props.value.oldChar;
+		var eventVal1 = props.value.value1;
+		var eventVal2 = props.value.value2;
+		var eventVal3 = props.value.value3;
+		if (props.eventKind == "Change Character") {
+			if (eventVal == "dad")
+				changeCharacter(Std.string(eventVal1), CharacterType.DAD, eventVal2, eventVal3);
+			if (eventVal == "bf")
+				changeCharacter(Std.string(eventVal1), CharacterType.BF, eventVal2, eventVal3);
+			if (eventVal == "gf")
+				changeCharacter(Std.string(eventVal1), CharacterType.GF, eventVal2, eventVal3);
+		}
+    }
+}
